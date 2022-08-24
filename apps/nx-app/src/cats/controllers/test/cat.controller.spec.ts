@@ -3,8 +3,8 @@ import { Test } from '@nestjs/testing';
 import { CatController } from '../cat.controller';
 import { Cat } from '../../entities/cat.entity';
 import { CatService } from '../../services/cat.service';
-import {CatMapper} from "../../mappers/cat.mapper";
-import {CatDTO} from "../../dtos/cat.dto";
+import { CatMapper } from '../../mappers/cat.mapper';
+import { CatDTO } from '../../dtos/cat.dto';
 
 const serviceStub = {
   create: jest.fn(),
@@ -34,7 +34,12 @@ describe('CatController', () => {
   describe('create', () => {
     it('should return the cat as created by the service', async () => {
       const cat = new Cat('a1', 'Tiger', new Date('01/01/2020'), 4);
-      const expectedCat = new CatDTO(cat.id, cat.name, cat.dateOfBirth, cat.weight)
+      const expectedCat = new CatDTO(
+        cat.id,
+        cat.name,
+        cat.dateOfBirth,
+        cat.weight
+      );
 
       jest.spyOn(service, 'create').mockResolvedValue(cat);
 
@@ -47,9 +52,9 @@ describe('CatController', () => {
 
   describe('getAll', () => {
     it('should return the cats as fetched by the service', async () => {
-      const cat1 = new Cat('a1', 'Tiger', new Date('01/01/2020'), 4)
-      const cat2 = new Cat('a2', 'Morgan', new Date('02/02/2022'), 5)
-      const fetchedCats = [cat1, cat2      ];
+      const cat1 = new Cat('a1', 'Tiger', new Date('01/01/2020'), 4);
+      const cat2 = new Cat('a2', 'Morgan', new Date('02/02/2022'), 5);
+      const fetchedCats = [cat1, cat2];
       const expectedCats = [
         new CatDTO(cat1.id, cat1.name, cat1.dateOfBirth, cat1.weight),
         new CatDTO(cat2.id, cat2.name, cat2.dateOfBirth, cat2.weight),
@@ -68,7 +73,12 @@ describe('CatController', () => {
     it('should return the cat as fetched by the service', async () => {
       const CAT_ID = 'a1';
       const fetchedCat = new Cat(CAT_ID, 'Tiger', new Date('01/01/2020'), 4);
-      const expectedCat = new CatDTO(fetchedCat.id, fetchedCat.name, fetchedCat.dateOfBirth, fetchedCat.weight)
+      const expectedCat = new CatDTO(
+        fetchedCat.id,
+        fetchedCat.name,
+        fetchedCat.dateOfBirth,
+        fetchedCat.weight
+      );
 
       jest.spyOn(service, 'getById').mockResolvedValue(fetchedCat);
 
@@ -83,7 +93,12 @@ describe('CatController', () => {
     it('should return the cat as updated by the service', async () => {
       const CAT_ID = 'a';
       const catUpdate = new Cat(CAT_ID, 'Morgan', new Date('02/02/2022'), 5);
-      const expectedCat = new CatDTO(catUpdate.id, catUpdate.name, catUpdate.dateOfBirth, catUpdate.weight);
+      const expectedCat = new CatDTO(
+        catUpdate.id,
+        catUpdate.name,
+        catUpdate.dateOfBirth,
+        catUpdate.weight
+      );
 
       jest.spyOn(service, 'update').mockResolvedValue(catUpdate);
 

@@ -10,21 +10,21 @@ export class CatController {
 
   @Post()
   async create(@Body() catDTO: CatDTO): Promise<CatDTO> {
-    const newCat = this.mapper.dtoToEntity(catDTO)
+    const newCat = this.mapper.dtoToEntity(catDTO);
     const createdCat = await this.catService.create(newCat);
-    return this.mapper.entityToDTO(createdCat)
+    return this.mapper.entityToDTO(createdCat);
   }
 
   @Get()
   async getAll(): Promise<CatDTO[]> {
     const cats = await this.catService.getAll();
-    return cats.map(this.mapper.entityToDTO)
+    return cats.map(this.mapper.entityToDTO);
   }
 
   @Get(':id')
   async getById(@Param('id') id: string): Promise<CatDTO> {
     const cat = await this.catService.getById(id);
-    return this.mapper.entityToDTO(cat)
+    return this.mapper.entityToDTO(cat);
   }
 
   @Post(':id')
@@ -32,7 +32,7 @@ export class CatController {
     @Param('id') id: string,
     @Body() catDTO: CatDTO
   ): Promise<CatDTO> {
-    const catUpdate = this.mapper.dtoToEntity(catDTO)
+    const catUpdate = this.mapper.dtoToEntity(catDTO);
     const cat = await this.catService.update(id, catUpdate);
     return this.mapper.entityToDTO(cat);
   }
