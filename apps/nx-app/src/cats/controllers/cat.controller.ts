@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 
 import { CatService } from '../services/cat.service';
 import { CatDTO } from '../dtos/cat.dto';
@@ -27,7 +36,7 @@ export class CatController {
     return this.mapper.entityToDTO(cat);
   }
 
-  @Post(':id')
+  @Put(':id')
   async update(
     @Param('id') id: string,
     @Body() catDTO: CatDTO
@@ -38,6 +47,7 @@ export class CatController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async delete(@Param('id') id: string): Promise<void> {
     return this.catService.delete(id);
   }
