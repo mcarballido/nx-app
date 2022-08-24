@@ -1,9 +1,9 @@
 import { Processor, Process } from '@nestjs/bull';
+import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 
 import { EVENTS, QUEUES } from '../../shared/constants';
 import { CatEvent } from '../../cats/entities/cat.event';
-import { Logger } from '@nestjs/common';
 
 @Processor(QUEUES.CAT)
 export class CatEventsConsumer {
