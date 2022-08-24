@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
 } from '@nestjs/common';
 
@@ -38,7 +37,7 @@ export class CatController {
     return this.catService.getById(id);
   }
 
-  @Patch(':id')
+  @Post(':id')
   async update(
     @Param('id') id: string,
     @Body() catDTO: CatDTO
@@ -54,7 +53,7 @@ export class CatController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
+  async delete(@Param('id') id: string): Promise<void> {
     return this.catService.delete(id);
   }
 }
