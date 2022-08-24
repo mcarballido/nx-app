@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+
 import { Cat } from '../../entities/cat.entity';
 import { ICatRepository } from '../cat.repository';
 

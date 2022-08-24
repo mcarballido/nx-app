@@ -1,43 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { Cat } from '../entities/cat.entity';
+import { Inject, Injectable } from '@nestjs/common';
 
-const cats: Cat[] = [
-  new Cat('a1', 'Tiger', new Date('01/01/2020'), 4),
-  new Cat('a2', 'Morgan', new Date('02/02/2022'), 5),
-];
+import { Cat } from '../entities/cat.entity';
+import { CAT_REPOSITORY, ICatRepository } from '../repositories/cat.repository';
 
 @Injectable()
 export class CatService {
+  constructor(@Inject(CAT_REPOSITORY) private repository: ICatRepository) {}
+
   async getAll(): Promise<Cat[]> {
-    return cats;
+    return this.repository.getAll();
   }
 
   async create(cat: Cat): Promise<Cat> {
-    return cat;
+    return this.repository.create(cat);
   }
 
   async getById(id: string): Promise<Cat> {
-    const foundCat = cats.find((cat) => cat.id === id);
-
-    if (!foundCat) {
-      throw new Error('Cat not found');
-    }
-
-    return foundCat;
+    return this.repository.getById(id);
   }
 
   async update(id: string, catUpdate: Cat): Promise<Cat> {
-    const cat = await this.getById(id);
-
-    cat.name = catUpdate.name;
-    cat.dateOfBirth = catUpdate.dateOfBirth;
-    cat.weight = catUpdate.weight;
-
-    return cat;
+    return this.repository.update(id, catUpdate);
   }
 
   async delete(id: string): Promise<void> {
-    id
-    // deletes cat
+    return this.repository.delete(id);
   }
 }

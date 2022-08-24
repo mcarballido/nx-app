@@ -8,4 +8,4 @@ export interface ICatRepository {
   delete(id: string): Promise<void>;
 }
 
-export const CAR_REPOSITORY = 'CatRepository';
+export const CAT_REPOSITORY = 'CatRepository';

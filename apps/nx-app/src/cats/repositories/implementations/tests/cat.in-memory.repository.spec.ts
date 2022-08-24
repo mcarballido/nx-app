@@ -1,18 +1,19 @@
-import { Cat } from '../../../entities/cat.entity';
-import { CatInMemoryRepository } from '../cat.in-memory.repository';
 import { NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { CAR_REPOSITORY, ICatRepository } from '../../cat.repository';
+
+import { Cat } from '../../../entities/cat.entity';
+import { CatInMemoryRepository } from '../cat.in-memory.repository';
+import { CAT_REPOSITORY, ICatRepository } from '../../cat.repository';
 
 describe('CatInMemoryRepository', () => {
   let catInMemoryRepository: ICatRepository;
 
   beforeAll(async () => {
-    const app = await Test.createTestingModule({
-      providers: [{ provide: CAR_REPOSITORY, useClass: CatInMemoryRepository }],
+    const module = await Test.createTestingModule({
+      providers: [{ provide: CAT_REPOSITORY, useClass: CatInMemoryRepository }],
     }).compile();
 
-    catInMemoryRepository = app.get<ICatRepository>(CAR_REPOSITORY);
+    catInMemoryRepository = module.get<ICatRepository>(CAT_REPOSITORY);
   });
 
   describe('create', () => {
@@ -78,13 +79,13 @@ describe('CatInMemoryRepository', () => {
         new Cat('a2', 'Asha', new Date('03/03/2018'), 15),
         new Cat('a3', 'Asha', new Date('04/04/2016'), 35),
       ];
-      const expectedCatList = [catsList[0], catUpdate, catsList[2]]
+      const expectedCatList = [catsList[0], catUpdate, catsList[2]];
       catInMemoryRepository['cats'] = catsList;
 
       const obtainedCat = await catInMemoryRepository.update('a2', catUpdate);
 
       expect(catInMemoryRepository['cats']).toEqual(expectedCatList);
-      expect(obtainedCat).toEqual(catUpdate)
+      expect(obtainedCat).toEqual(catUpdate);
     });
   });
 
