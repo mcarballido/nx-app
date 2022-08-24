@@ -1,4 +1,6 @@
 import { Test } from '@nestjs/testing';
+import { getQueueToken } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 import { CatService } from '../cat.service';
 import {
@@ -6,40 +8,49 @@ import {
   ICatRepository,
 } from '../../repositories/cat.repository';
 import { Cat } from '../../entities/cat.entity';
+import { EVENTS, QUEUES } from '../../../shared/constants';
 
-const repositoryStub: ICatRepository = {
+const repositoryStub = {
   create: jest.fn(),
   getAll: jest.fn(),
   getById: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
 };
+const queueStub = {
+  add: jest.fn(),
+};
 
 describe('CatService', () => {
   let service: CatService;
   let repository: ICatRepository;
+  let queue: Queue;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [
         CatService,
         { provide: CAT_REPOSITORY, useValue: repositoryStub },
+        { provide: getQueueToken(QUEUES.CAT), useValue: queueStub },
       ],
     }).compile();
 
     service = module.get<CatService>(CatService);
     repository = module.get<ICatRepository>(CAT_REPOSITORY);
+    queue = module.get<Queue>(getQueueToken(QUEUES.CAT));
   });
 
   describe('create', () => {
     it('should return the cat as created by the repository', async () => {
       const catToCreate = new Cat('a1', 'Tiger', new Date('01/01/2020'), 4);
+      const eventToSend = { cat: catToCreate, date: new Date() };
 
       jest.spyOn(repository, 'create').mockResolvedValue(catToCreate);
 
       const obtainedCat = await service.create(catToCreate);
 
       expect(obtainedCat).toEqual(catToCreate);
+      expect(queue.add).toHaveBeenCalledWith(EVENTS.CAT_CREATED, eventToSend);
       expect(repository.create).toHaveBeenCalledWith(catToCreate);
     });
   });

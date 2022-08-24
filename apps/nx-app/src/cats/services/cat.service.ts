@@ -1,18 +1,32 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 import { Cat } from '../entities/cat.entity';
 import { CAT_REPOSITORY, ICatRepository } from '../repositories/cat.repository';
+import { EVENTS, QUEUES } from '../../shared/constants';
+import { CatEvent } from '../entities/cat.event';
 
 @Injectable()
 export class CatService {
-  constructor(@Inject(CAT_REPOSITORY) private repository: ICatRepository) {}
+  constructor(
+    @InjectQueue(QUEUES.CAT) private queue: Queue<CatEvent>,
+    @Inject(CAT_REPOSITORY) private repository: ICatRepository
+  ) {}
 
   async getAll(): Promise<Cat[]> {
     return this.repository.getAll();
   }
 
   async create(cat: Cat): Promise<Cat> {
-    return this.repository.create(cat);
+    const createdCat = await this.repository.create(cat);
+
+    this.queue.add(EVENTS.CAT_CREATED, {
+      cat: createdCat,
+      date: new Date(),
+    });
+
+    return createdCat;
   }
 
   async getById(id: string): Promise<Cat> {
