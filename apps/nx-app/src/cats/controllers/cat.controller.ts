@@ -1,40 +1,30 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
 import { CatService } from '../services/cat.service';
 import { CatDTO } from '../dtos/cat.dto';
-import { Cat } from '../entities/cat.entity';
+import { CatMapper } from '../mappers/cat.mapper';
 
 @Controller('cats')
 export class CatController {
-  constructor(private readonly catService: CatService) {}
+  constructor(private catService: CatService, private mapper: CatMapper) {}
 
   @Post()
   async create(@Body() catDTO: CatDTO): Promise<CatDTO> {
-    const newCat = new Cat(
-      catDTO.id,
-      catDTO.name,
-      catDTO.dateOfBirth,
-      catDTO.weight
-    );
-
-    return this.catService.create(newCat);
+    const newCat = this.mapper.dtoToEntity(catDTO)
+    const createdCat = await this.catService.create(newCat);
+    return this.mapper.entityToDTO(createdCat)
   }
 
   @Get()
   async getAll(): Promise<CatDTO[]> {
-    return this.catService.getAll();
+    const cats = await this.catService.getAll();
+    return cats.map(this.mapper.entityToDTO)
   }
 
   @Get(':id')
   async getById(@Param('id') id: string): Promise<CatDTO> {
-    return this.catService.getById(id);
+    const cat = await this.catService.getById(id);
+    return this.mapper.entityToDTO(cat)
   }
 
   @Post(':id')
@@ -42,14 +32,9 @@ export class CatController {
     @Param('id') id: string,
     @Body() catDTO: CatDTO
   ): Promise<CatDTO> {
-    const catUpdate = new Cat(
-      catDTO.id,
-      catDTO.name,
-      catDTO.dateOfBirth,
-      catDTO.weight
-    );
-
-    return this.catService.update(id, catUpdate);
+    const catUpdate = this.mapper.dtoToEntity(catDTO)
+    const cat = await this.catService.update(id, catUpdate);
+    return this.mapper.entityToDTO(cat);
   }
 
   @Delete(':id')

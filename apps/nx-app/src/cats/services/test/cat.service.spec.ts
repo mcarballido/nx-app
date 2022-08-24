@@ -6,6 +6,7 @@ import {
   ICatRepository,
 } from '../../repositories/cat.repository';
 import { Cat } from '../../entities/cat.entity';
+import {CatMapper} from "../../mappers/cat.mapper";
 
 const repositoryStub: ICatRepository = {
   create: jest.fn(),
